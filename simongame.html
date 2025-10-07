@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simon Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #colored-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 100px);
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        button {
+            width: 100px;
+            height: 100px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        #start {
+            width: 120px;
+            height: 40px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        #score {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+        .flash {
+            transform: scale(1.2);
+            box-shadow: 0 0 20px white;
+        }
+    </style>
+</head>
+<body>
+    <div id="colored-buttons">
+        <button id="red" style="background:red;">Red</button>
+        <button id="green" style="background:green;">Green</button>
+        <button id="blue" style="background:blue;">Blue</button>
+        <button id="yellow" style="background:yellow;">Yellow</button>
+    </div>
+    <button id="start" onclick="startButton()">Start</button>
+    <div id="score">SCORE: 0</div>
+<script>
+    let gamesequence = [];
+    let userSequence = [];
+    let score = 0;
+    const colors = ['red','green','blue','yellow'];
+
+    document.getElementById('colored-buttons').addEventListener('click', function(event) {
+        if (event.target.tagName === 'BUTTON') {
+            let clicked = event.target.id;
+            userSequence.push(clicked);
+            flashbutton(clicked);
+            if (clicked !== gamesequence[userSequence.length - 1]) {
+                alert('Game Over!');
+                score = 0;
+                document.getElementById('score').textContent = 'SCORE: ' + score;
+                gamesequence = [];
+                userSequence = [];
+                return;
+            }
+            if (userSequence.length === gamesequence.length) {
+                score++;
+                document.getElementById('score').textContent = 'SCORE: ' + score;
+                setTimeout(nextRound, 500);
+            }
+        }
+    });
+
+    function startButton() {
+        gamesequence = [];
+        userSequence = [];
+        score = 0;
+        document.getElementById('score').textContent = 'SCORE: ' + score;
+        nextRound();
+    }
+
+    function nextRound() {
+        userSequence = [];
+        let randomIndex = Math.floor(Math.random() * colors.length);
+        let randomColor = colors[randomIndex];
+        gamesequence.push(randomColor);
+        gamesequence.forEach((color, index) => {
+            setTimeout(() => {
+                flashbutton(color);
+            }, 600 * index);
+        });
+    }
+
+    function flashbutton(color) {
+        let button = document.getElementById(color);
+        button.classList.add('flash');
+        setTimeout(() => {
+            button.classList.remove('flash');
+        }, 300);
+    }
+</script>
+</body>
+</html>
